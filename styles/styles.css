@@ -1,0 +1,16 @@
+@font-face {
+    font-family: greenRiverFont;
+    src: url(big_noodle_titling.ttf);
+}
+
+#navbar-green {
+    background-color: #2c882b !important;
+}
+
+#logo {
+    background: url(https://www.greenriver.edu/media/site-assets/img/logo.png) no-repeat center center;
+}
+
+.grfont {
+    font-family: greenRiverFont;
+}
