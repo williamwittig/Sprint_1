@@ -1,0 +1,15 @@
+{
+  "name" : "GreenRiverDev/485/Sprint_1",
+  "authors" : [
+    {
+      "name": "William Wittig",
+      "email": "wittig.william@student.greenriver.edu"
+    }
+  ],
+  "require" : {
+    "bcosca/fatfree-core": "dev-master"
+  },
+  "autoload": {
+    "classmap": ["model/", "controllers/", "views/", "classes/"]
+  }
+}
