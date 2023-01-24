@@ -3,14 +3,36 @@
     src: url(big_noodle_titling.ttf);
 }
 
-#navbar-green {
+.navbar {
+    padding: 0 !important;
+}
+
+.nav-grc {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.nav-item {
+    margin-left: 20px !important;
+    margin-right: 20px !important;
+}
+
+.nav-link {
+    margin: 0 !important;
+}
+
+.bg-grcgreen {
     background-color: #2c882b !important;
 }
 
-#logo {
-    background: url(https://www.greenriver.edu/media/site-assets/img/logo.png) no-repeat center center;
+.gr-logo {
+    width: 120px;
+    margin: 0px 32px !important;
 }
 
 .grfont {
     font-family: greenRiverFont;
+}
+
+.saved {
+    margin-right: 50px !important;
 }

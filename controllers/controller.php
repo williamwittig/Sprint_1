@@ -35,12 +35,10 @@ class Controller {
 	}
 
 	function educationPlan() {
-		//		var_dump($_SESSION);
 		$this->viewID();
 
 		$view=new Template();
-		echo $view->render('/views/education_plan.html');
-
+		echo $view->render('views/education_plan.html');
 
 		if ($_SERVER['REQUEST_METHOD']=='POST') {
 			$fName = $_POST['fName'];
@@ -118,7 +116,6 @@ class Controller {
 		}
 
 		return "";
-		// session_destroy();
 	}
 
 	function saveSchedule($idNum, $season, $year,
