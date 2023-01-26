@@ -2,11 +2,6 @@
 
 /**
  * TODO: Routing from the home page to the form is not working
- * TODO: Add token to the form
- * TODO: Add server-side functionality to the form
- * TODO: Add client-side validation to the form
- * TODO: Add server-side validation to the form
- * TODO: Add form retrieval to the form from previous tokens
  */
 
 //use model\DataLayer;
@@ -41,6 +36,21 @@ $f3->route('GET|POST / educationPlan', function()
 	// Displaying the page
 	global $con;
 	$con->educationPlan();
+});
+
+$f3->route('GET|POST /admin', function()
+{
+    // Displaying the page
+    global $con;
+    $con->admin();
+});
+
+// TODO: DELETE THIS BEFORE SUBMIT, using this for testing php techniques
+$f3->route('GET|POST /test', function()
+{
+    // Displaying the page
+    global $con;
+    $con->test();
 });
 
 // Run fat free

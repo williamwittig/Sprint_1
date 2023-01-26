@@ -72,6 +72,11 @@ class Controller {
 		return "";
 	}
 
+    function admin() {
+        $view=new Template();
+        echo $view->render('views/admin.html');
+    }
+
 	function getTime() {
 		date_default_timezone_set('America/Los_Angeles');
 		return date('h:i:s a', time());
@@ -191,4 +196,9 @@ class Controller {
 		$statement->bindParam(':lastSaved', $lastSaved);
 		$statement->execute();
 	}
+
+    function test() {
+        $view=new Template();
+        echo $view->render('views/test.php');
+    }
 }
