@@ -11,39 +11,68 @@
 
 <body class="">
     <!--NAVBAR-->
-    <include href="views/includes/navbar.html"></include>
+    <!--NAVBAR-->
+    <nav class="navbar navbar-expand-lg nav-grc sticky-top grfont shadow-sm">
+        <div>
+            <a class="text-dark d-block bg-grcgreen p-3" href="{{ @BASE }}">
+                <img src="https://www.greenriver.edu/media/site-assets/img/logo.png"
+                     class="gr-logo">
+            </a>
+        </div>
 
-    <section class="ml-5 mr-5 p-5">
-        <table class="table table-responsive table-bordered table-hover">
-            <thead class="bg-grcgreen">
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">First</th>
-                <th scope="col">Last</th>
-                <th scope="col">Handle</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td colspan="2">Larry the Bird</td>
-                <td>@twitter</td>
-            </tr>
-            </tbody>
-        </table>
-    </section>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav align-items-center">
+                <li class="nav-item active">
+                    <a class="nav-link text-dark" href="educationPlan">
+                        <h5 class="mb-0">New Education Plan (Routing not working!)</h5>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link text-dark" href="#">
+                        <h5 class="mb-0">Previous Education Plan (Routing not working!)</h5>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container mt-2 grfont">
+        <div class="row justify-content-center">
+            <div class="col text-center">
+                <h1 class="pt-5">Academic Schedules</h1>
+                <hr class="shadow-sm">
+            </div>
+        </div>
+        <!-- Admin Table -->
+        <section class="ml-5 mr-5 p-5">
+            <table class="table table-responsive table-bordered table-hover text-center shadow-sm">
+                <thead class="bg-grcgreen">
+                    <tr>
+                        <th scope="col">Token</th>
+                        <th scope="col">Advisor</th>
+                        <th scope="col">Fall Quarter</th>
+                        <th scope="col">Winter Quarter</th>
+                        <th scope="col">Spring Quarter</th>
+                        <th scope="col">Summer Quarter</th>
+                        <th scope="col">Last Saved</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--Repeating section to show all data in table from database-->
+                    <repeat group="{{ @schedules }}" value="@schedule">
+                        <tr>
+                            <td>{{ @schedule['studentToken'] }}</td>
+                            <td>{{ @schedule['advisor'] }}</td>
+                            <td>{{ @schedule['fallQtr'] }}</td>
+                            <td>{{ @schedule['winterQtr'] }}</td>
+                            <td>{{ @schedule['springQtr'] }}</td>
+                            <td>{{ @schedule['summerQtr'] }}</td>
+                            <td>{{ @schedule['lastSaved'] }}</td>
+                        </tr>
+                    </repeat>
+                </tbody>
+            </table>
+        </section>
+    </div>
 
     <!--Including the JS for the file-->
     <include href="views/includes/js.html"></include>

@@ -22,7 +22,7 @@
 		<div class="row justify-content-center mb-5 pb-5">
 			<div class="col text-center">
 				<h1 class="pt-5 pb-3">Educational Planning Worksheet</h1>
-				<form method="post">
+				<form class="col-lg-8 offset-lg-2" action="" method="post">
 					<div class="form-group text-center mb-2">
 						<h4>Student Token:
 							<check if="isset(@SESSION.schedule)"><span>{{ @SESSION.schedule->getToken() }}</span></check>
@@ -36,11 +36,10 @@
 						<check if="isset(@SESSION.schedule)">
 							value="{{ @SESSION.schedule->getAdvisor() }}"</check> placeholder="Enter advisor">
 					</label>
-				</form>
 
 				<hr class="shadow-sm">
 
-				<form class="col-lg-8 offset-lg-2" action="" method="post">
+
 					<div class="container p-0">
 						<div class="row">
 							<div class="col-sm">

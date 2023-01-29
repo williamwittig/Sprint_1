@@ -31,14 +31,14 @@ $f3->route('GET /', function()
 	$con->home();
 });
 
-$f3->route('GET|POST / educationPlan', function()
+$f3->route('GET|POST /educationPlan', function()
 {
 	// Displaying the page
 	global $con;
 	$con->educationPlan();
 });
 
-$f3->route('GET|POST /admin', function()
+$f3->route('GET|POST / admin', function()
 {
     // Displaying the page
     global $con;

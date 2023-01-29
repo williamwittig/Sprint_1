@@ -73,9 +73,21 @@ class Controller {
 	}
 
     function admin() {
+		// Get all schedules from the database
+		$schedules = $this->getAllSchedules();
+		$this->_f3->set('schedules', $schedules);
+
         $view=new Template();
         echo $view->render('views/admin.html');
     }
+
+	function getAllSchedules() {
+		$sql = "SELECT * FROM studentSchedule";
+		$statement = $this->_dbh->prepare($sql);
+		$statement->execute();
+		$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+		return $result;
+	}
 
 	function getTime() {
 		date_default_timezone_set('America/Los_Angeles');

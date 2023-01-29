@@ -26,13 +26,30 @@
 
 .gr-logo {
     width: 120px;
-    margin: 0px 32px !important;
+    margin: 0 32px !important;
 }
 
 .grfont {
-    font-family: greenRiverFont;
+    font-family: greenRiverFont, serif;
 }
 
 .saved {
     margin-right: 50px !important;
+}
+
+/* CSS for printing */
+@media print {
+    .navbar {
+        display: none !important;
+    }
+
+    .table {
+        box-shadow: none !important;
+        border-color: black !important;
+    }
+
+    .table th {
+        background-color: grey !important;
+        color: black !important;
+    }
 }
