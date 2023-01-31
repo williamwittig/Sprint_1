@@ -33,9 +33,16 @@
 				</li>
 				<li class="nav-item active">
 					<a class="nav-link text-dark" href="login">
-						<h5 class="mb-0">Admin Login</h5>
+						<h5 class="mb-0">Admin</h5>
 					</a>
 				</li>
+				<check if="$_SESSION['loggedIn'] === true">
+					<li class="nav-item active">
+						<a class="nav-link text-dark" href="logout">
+							<h5 class="mb-0">Logout</h5>
+						</a>
+					</li>
+				</check>
 			</ul>
 		</div>
 

@@ -28,7 +28,6 @@ class Controller {
 	}
 
 	function home() {
-		session_destroy();
 		$view=new Template();
 		echo $view->render('views/home.html');
 	}
@@ -82,6 +81,11 @@ class Controller {
 	}
 
 	function login() {
+		if (isset($_SESSION['loggedIn']) && $_SESSION['loggedIn']) {
+			header("Location: admin");
+			exit();
+		}
+
 		// Checking for login
 		if ($_SERVER['REQUEST_METHOD']==='POST') {
 			// Get the username and password from the form
@@ -110,6 +114,12 @@ class Controller {
 
 	function isValidLogin($username, $password) {
 		return ($username == 'admin' && $password == 'admin');
+	}
+
+	function logout() {
+		session_destroy();
+		header("Location: home");
+		exit();
 	}
 
 

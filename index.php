@@ -31,6 +31,13 @@ $f3->route('GET /', function()
 	$con->home();
 });
 
+$f3->route('GET /home', function()
+{
+	// Displaying the page
+	global $con;
+	$con->home();
+});
+
 $f3->route('GET|POST /educationPlan', function()
 {
 	// Displaying the page
@@ -43,6 +50,13 @@ $f3->route('GET|POST /login', function()
 	// Displaying the page
 	global $con;
 	$con->login();
+});
+
+$f3->route('GET|POST /logout', function()
+{
+	// Displaying the page
+	global $con;
+	$con->logout();
 });
 
 $f3->route('GET|POST /admin', function()
