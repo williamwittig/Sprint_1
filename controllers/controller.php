@@ -28,6 +28,7 @@ class Controller {
 	}
 
 	function home() {
+		session_destroy();
 		$view=new Template();
 		echo $view->render('views/home.html');
 	}
@@ -36,6 +37,15 @@ class Controller {
 		// Get the token from the URL
 		$url = parse_url($_SERVER['REQUEST_URI']);
 		$token = $url['query'];
+
+		// If the date is before June show previous year's schedule
+		if ($this->getCurrentMonth() < 6) {
+			$this->_f3->set('year', $this->getCurrentYear());
+		}
+		// If the date is after June show next year's schedule
+		else {
+			$this->_f3->set('year', ((int)$this->getCurrentYear()) + 1);
+		}
 
 		// If the user input a token, retrieve the schedule
 		if ($token!='' && $this->hasToken($token)) {
@@ -69,8 +79,39 @@ class Controller {
 
 			$this->addTokenToURL($token);
 		}
-		return "";
 	}
+
+	function login() {
+		// Checking for login
+		if ($_SERVER['REQUEST_METHOD']==='POST') {
+			// Get the username and password from the form
+			$username = $_POST['username'];
+			$password = $_POST['password'];
+
+			// Check if the username and password are valid
+			if ($this->isValidLogin($username, $password)) {
+				// Redirect to the admin page
+				$_SESSION['loggedIn'] = true;
+				header("Location: admin");
+				exit();
+			}
+
+			// Redirect to the login page
+			$_SESSION['loggedIn'] = false;
+			// Display error messages
+			$_SESSION['usernameError'] = "Invalid username";
+			$_SESSION['passwordError'] = "Invalid password";
+		}
+
+		// Rendering the education plan page
+		$view=new Template();
+		echo $view->render('views/login.html');
+	}
+
+	function isValidLogin($username, $password) {
+		return ($username == 'admin' && $password == 'admin');
+	}
+
 
     function admin() {
 		// Get all schedules from the database
@@ -87,6 +128,21 @@ class Controller {
 		$statement->execute();
 		$result = $statement->fetchAll(PDO::FETCH_ASSOC);
 		return $result;
+	}
+
+	function getCurrentDay() {
+		date_default_timezone_set('America/Los_Angeles');
+		return date('d');
+	}
+
+	function getCurrentMonth() {
+		date_default_timezone_set('America/Los_Angeles');
+		return date('m');
+	}
+
+	function getCurrentYear() {
+		date_default_timezone_set('America/Los_Angeles');
+		return date('Y');
 	}
 
 	function getTime() {

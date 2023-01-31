@@ -4,7 +4,7 @@
  * TODO: Routing from the home page to the form is not working
  */
 
-//use model\DataLayer;
+//use models\DataLayer;
 include 'controllers/controller.php';
 
 ini_set('display_errors', 1);
@@ -38,19 +38,18 @@ $f3->route('GET|POST /educationPlan', function()
 	$con->educationPlan();
 });
 
-$f3->route('GET|POST / admin', function()
+$f3->route('GET|POST /login', function()
+{
+	// Displaying the page
+	global $con;
+	$con->login();
+});
+
+$f3->route('GET|POST /admin', function()
 {
     // Displaying the page
     global $con;
     $con->admin();
-});
-
-// TODO: DELETE THIS BEFORE SUBMIT, using this for testing php techniques
-$f3->route('GET|POST /test', function()
-{
-    // Displaying the page
-    global $con;
-    $con->test();
 });
 
 // Run fat free

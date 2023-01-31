@@ -11,21 +11,14 @@
         <ul class="navbar-nav align-items-center">
             <li class="nav-item active">
                 <a class="nav-link text-dark" href="educationPlan">
-                    <h5 class="mb-0">New Education Plan (Routing not working!)</h5>
+                    <h5 class="mb-0">Education Plan</h5>
                 </a>
             </li>
             <li class="nav-item active">
-                <a class="nav-link text-dark" href="#">
-                    <h5 class="mb-0">Previous Education Plan (Routing not working!)</h5>
+                <a class="nav-link text-dark" href="login">
+                    <h5 class="mb-0">Admin Login</h5>
                 </a>
             </li>
         </ul>
-    </div>
-
-    <div class="float-centered text-center mt-2 saved">
-			<span class="d-block text-dark">
-				<h5>Last Saved:
-					<check if="isset(@SESSION.schedule)">{{ @SESSION.schedule->getLastSaved() }}</check></h5>
-			</span>
     </div>
 </nav>

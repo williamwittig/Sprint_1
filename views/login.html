@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<include href="views/includes/css.html"></include>
+	<title>Login</title>
+</head>
+<body>
+	<!--NAVBAR-->
+	<include href="views/includes/navbar.html"></include>
+
+	<div class="container bg-light shadow-sm border border-solid rounded text-center w-25 mt-5 p-3 pt-5 pb-5">
+		<form action="" method="post" id="loginForm">
+			<h1>Login</h1>
+
+			<!-- Email input -->
+			<div class="form-outline mb-4">
+				<label class="form-label" for="username">Username (admin)</label>
+				<input type="text" id="username" name="username" class="form-control" />
+				<span id="usernameError" class="text-danger error">Please enter a valid username</span>
+			</div>
+
+			<!-- Password input -->
+			<div class="form-outline mb-4">
+				<label class="form-label" for="password">Password (admin)</label>
+				<input type="password" id="password" name="password" class="form-control" />
+				<check if="$_SESSION['passwordError'] !== null">
+					<span id="passwordError" class="text-danger error">Please enter a valid password</span>
+				</check>
+			</div>
+
+			<!-- Submit button -->
+			<button type="submit" class="btn btn-primary btn-block mb-4">Sign in</button>
+		</form>
+	</div>
+
+	<!--Including the JS for the file-->
+	<include href="views/includes/js.html"></include>
+</body>
+</html>
