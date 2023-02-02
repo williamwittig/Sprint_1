@@ -75,9 +75,19 @@ class Controller {
 					$_POST['winterQtr'], $_POST['springQtr'], $_POST['summerQtr'],
 					$this->getTime());
 			}
-
 			$this->addTokenToURL($token);
 		}
+
+        // Adding more quarter blocks
+        if (array_key_exists('addYearBackward', $_POST)) {
+            echo '<h1>works1</h1>';
+            $this->addYearBackward();
+        }
+
+        if (array_key_exists('addYearForward', $_POST)) {
+            echo '<h1>works2</h1>';
+            $this->addYearForward();
+        }
 	}
 
 	function login() {
