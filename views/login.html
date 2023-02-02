@@ -17,13 +17,17 @@
 			<div class="form-outline mb-4">
 				<label class="form-label" for="username">Username (admin)</label>
 				<input type="text" id="username" name="username" class="form-control" />
-				<span id="usernameError" class="text-danger error">Please enter a valid username</span>
+
+				<check if="$_SESSION['usernameError'] !== null">
+					<span id="usernameError" class="text-danger error">Please enter a valid username</span>
+				</check>
 			</div>
 
 			<!-- Password input -->
 			<div class="form-outline mb-4">
 				<label class="form-label" for="password">Password (admin)</label>
 				<input type="password" id="password" name="password" class="form-control" />
+
 				<check if="$_SESSION['passwordError'] !== null">
 					<span id="passwordError" class="text-danger error">Please enter a valid password</span>
 				</check>

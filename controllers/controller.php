@@ -98,13 +98,20 @@ class Controller {
 				$_SESSION['loggedIn'] = true;
 				header("Location: admin");
 				exit();
-			}
+			} else {
+                // Incorrect username
+                if (!$this->isValidUsername($username)) {
+                    $_SESSION['usernameError'] = 'Username Error';
+                }
 
-			// Redirect to the login page
-			$_SESSION['loggedIn'] = false;
-			// Display error messages
-			$_SESSION['usernameError'] = "Invalid username";
-			$_SESSION['passwordError'] = "Invalid password";
+                // Incorrect password
+                if (!$this->isValidPassword($password)) {
+                    $_SESSION['passwordError'] = 'Password Error';
+                }
+
+                // Redirect to the login page
+                $_SESSION['loggedIn'] = false;
+            }
 		}
 
 		// Rendering the education plan page
@@ -112,8 +119,16 @@ class Controller {
 		echo $view->render('views/login.html');
 	}
 
+    function isValidUsername($username) {
+        return $username === 'admin';
+    }
+
+    function isValidPassword($password) {
+        return $password === 'admin';
+    }
+
 	function isValidLogin($username, $password) {
-		return ($username == 'admin' && $password == 'admin');
+		return $this->isValidUsername($username) && $this->isValidPassword($password);
 	}
 
 	function logout() {
@@ -124,6 +139,11 @@ class Controller {
 
 
     function admin() {
+        if (!isset($_SESSION['loggedIn']) || !$_SESSION['loggedIn']) {
+            header("Location: login");
+            exit();
+        }
+
 		// Get all schedules from the database
 		$schedules = $this->getAllSchedules();
 		$this->_f3->set('schedules', $schedules);
