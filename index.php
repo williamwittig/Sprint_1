@@ -4,9 +4,6 @@
  * TODO: Routing from the home page to the form is not working
  */
 
-//use models\DataLayer;
-include 'controllers/controller.php';
-
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
