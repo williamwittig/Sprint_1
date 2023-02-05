@@ -1,7 +1,5 @@
 <?php
 
-
-namespace DataLayer;
 class DataLayer {
 	private $_dbh;
 
@@ -11,6 +9,7 @@ class DataLayer {
 	function __construct() {
 		//TODO: Move try-catch from config.php to here
 		require_once $_SERVER['DOCUMENT_ROOT'].'/../config.php';
+        $this->_dbh = $dbh;
 
 		$this->_dbh->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
 		$this->_dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES,FALSE);
