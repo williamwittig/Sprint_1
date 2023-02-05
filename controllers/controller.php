@@ -17,14 +17,6 @@ class Controller {
 		$this->_dbh = $dbh;
 		$this->_dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		$this->_dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-
-		// Connect to the database
-		$username="wwittigg_grcuser";
-		$password="Merc2016";
-		$hostname="localhost";
-		$database="wwittigg_grc";
-		$cnxn=@mysqli_connect($hostname,$username,$password,$database)
-		or die("<p>Oops! Something went wrong.</p>");
 	}
 
 	function home() {
