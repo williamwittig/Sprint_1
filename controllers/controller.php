@@ -1,7 +1,5 @@
 <?php
 
-include 'classes/schedule.php';
-
 class Controller {
 	private $_f3;
 
@@ -33,7 +31,7 @@ class Controller {
 		}
 
 		// If the user input a token, retrieve the schedule
-		if ($token!='' && $GLOBALS['datalayer']->hasToken($token)) {
+		if ($token!='' && $GLOBALS['datalayer']->planExists($token)) {
 			// echo "Retrieving schedule...<br>";
 			$GLOBALS['datalayer']->getSchedule($token);
 		}
@@ -51,15 +49,13 @@ class Controller {
 
 		// Saving the schedule to the database
 		if ($_SERVER['REQUEST_METHOD']==='POST') {
-			if ($GLOBALS['datalayer']->hasToken($_SESSION['schedule']->getToken())) {
+			if ($GLOBALS['datalayer']->planExists($_SESSION['schedule']->getToken())) {
 				$GLOBALS['datalayer']->updateSchedule($token, $_POST['advisor'], $_POST['fallQtr'],
 					$_POST['winterQtr'], $_POST['springQtr'], $_POST['summerQtr'],
 					$this->getTime());
 			}
 			else {
-				$GLOBALS['datalayer']->saveNewSchedule($token, $_POST['advisor'], $_POST['fallQtr'],
-					$_POST['winterQtr'], $_POST['springQtr'], $_POST['summerQtr'],
-					$this->getTime());
+				$GLOBALS['datalayer']->saveNewPlan($token, $this->getTime());
 			}
 			$this->addTokenToURL($token);
 		}
@@ -185,7 +181,7 @@ class Controller {
 	function generateStudentToken() {
 //		return random_int(100000, 999999);
 		$token = $this->randHash();
-		while (!$GLOBALS['datalayer']->isUniqueToken($token)) {
+		while ($GLOBALS['datalayer']->planExists($token)) {
 			$token = $this->randHash();
 		}
 		return $token;
