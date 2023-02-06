@@ -22,25 +22,19 @@ class Controller {
 		$token = $url['query'];
 
 		// If the date is before June show previous year's schedule
-		if ($this->getCurrentMonth() < 6) {
-			$this->_f3->set('year', $this->getCurrentYear());
-		}
-		// If the date is after June show next year's schedule
-		else {
-			$this->_f3->set('year', ((int)$this->getCurrentYear()) + 1);
-		}
+		$this->_f3->set('year', DataLayer::getCurrentSchoolYear());
 
 		// If the user input a token, retrieve the schedule
 		if ($token!='' && $GLOBALS['datalayer']->planExists($token)) {
-			// echo "Retrieving schedule...<br>";
+			// Get and store schedule in SESSION['schedule']
 			$GLOBALS['datalayer']->getSchedule($token);
 		}
 		// If the user did not input a token, generate a new one
 		else {
 			// echo "Generating new token...<br>";
 			$token = $this->generateStudentToken();
-			$_SESSION['schedule'] = new Schedule($token, "", "",
-				"", "", "", "");
+
+			$_SESSION['schedule'] = new Schedule($token, "", "", DataLayer::getNewSchoolYears());
 		}
 
 		// Rendering the education plan page
@@ -50,12 +44,10 @@ class Controller {
 		// Saving the schedule to the database
 		if ($_SERVER['REQUEST_METHOD']==='POST') {
 			if ($GLOBALS['datalayer']->planExists($_SESSION['schedule']->getToken())) {
-				$GLOBALS['datalayer']->updateSchedule($token, $_POST['advisor'], $_POST['fallQtr'],
-					$_POST['winterQtr'], $_POST['springQtr'], $_POST['summerQtr'],
-					$this->getTime());
+				$GLOBALS['datalayer']->updateSchedule($token);
 			}
 			else {
-				$GLOBALS['datalayer']->saveNewPlan($token, $this->getTime());
+				$GLOBALS['datalayer']->saveNewPlan($token);
 			}
 			$this->addTokenToURL($token);
 		}

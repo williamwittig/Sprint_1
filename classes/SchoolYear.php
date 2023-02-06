@@ -8,13 +8,13 @@ class SchoolYear {
     private $_summerNotes;
     private $_render;
 
-    public function __construct($year, $fall = "", $winter = "", $spring = "", $summer = "") {
+    public function __construct($year, $fall = "", $winter = "", $spring = "", $summer = "", $render = false) {
         $this->_year = $year;
         $this->_fallNotes = $fall;
         $this->_winterNotes = $winter;
         $this->_springNotes = $spring;
         $this->_summerNotes = $summer;
-        $this->_render = false;
+        $this->_render = $render;
     }
 
     // Getters

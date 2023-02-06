@@ -347,24 +347,21 @@ class DataLayer {
         return $token;
     }
 
-
-    static function createBlankPlan()
+    /**
+     * Method to generate a blank
+     */
+    static function getNewSchoolYears()
     {
         // Get data
         $currentSchoolYear = self::getCurrentSchoolYear();
+        
+        // Create Year
+        $newYear = new SchoolYear($currentSchoolYear, "", "", "", "", true);
+        
+        // Create array of schoolYears
+        $schoolYears = [$currentSchoolYear] = $newYear;
 
-        $plan['schoolYears'][$currentSchoolYear] = []; // Add current year
-        $plan['schoolYears'][$currentSchoolYear]['render'] = true; // Set year to render
-        $plan['schoolYears'][$currentSchoolYear]['fall']['notes'] = ""; // Initialize notes to empty
-        $plan['schoolYears'][$currentSchoolYear]['winter']['notes'] = "";
-        $plan['schoolYears'][$currentSchoolYear]['spring']['notes'] = "";
-        $plan['schoolYears'][$currentSchoolYear]['summer']['notes'] = "";
-        $plan['schoolYears'][$currentSchoolYear]['fall']['calendarYear'] = $currentSchoolYear - 1; // Set calendar Years
-        $plan['schoolYears'][$currentSchoolYear]['winter']['calendarYear'] = $currentSchoolYear;
-        $plan['schoolYears'][$currentSchoolYear]['spring']['calendarYear'] = $currentSchoolYear;
-        $plan['schoolYears'][$currentSchoolYear]['summer']['calendarYear'] = $currentSchoolYear;
-
-        return $plan;
+        return $schoolYears;
     }
 
     static function getCurrentSchoolYear(): int
