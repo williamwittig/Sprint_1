@@ -13,14 +13,14 @@ require_once('vendor/autoload.php');
 // Start the session
 session_start();
 
+// Create an Instance of the DataLayer for data encapsulation
+$datalayer = new DataLayer();
+
 // Create instance of the base class
 $f3 = Base::instance();
 
 // Creating an instance of the controllers class
 $con = new Controller($f3);
-
-// Create an Instance of the DataLayer for data encapsulation
-$datalayer = new DataLayer();
 
 // Define a default route
 // Home page rendering
