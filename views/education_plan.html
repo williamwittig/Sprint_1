@@ -82,77 +82,92 @@
 								type="button">Add Year</button>
 					</div>
 
-					<div id="schoolYear" class="container p-0">
-						<div class="row">
-							<div class="col-sm">
-								<div>
-									<h4 class="d-inline">Fall Quarter</h4>
-									<h5>{{ @year - 1 }}</h5>
-								</div>
-
-								<div class="input-group m-2" id="fallQtr">
-									<div class="input-group m-2 mb-0">
-										<!-- declaration for first field -->
-										<textarea class="form-control w-50 inputlg shadow-sm" rows="8"
-												  name="fallQtr" placeholder="Enter classes"
-										><check if="isset(@SESSION.schedule)">{{
-											@SESSION.schedule->getFallQtr()}}</check></textarea>
+					<repeat group="{{ @SESSION.schedule->getSchoolYears() }}" value="{{ @schoolYear }}">
+						<check if="{{ @schoolYear->shouldRender() }}">
+						<div id="{{ @schoolYear->getYear() }}" class="container p-0">
+							<div class="row">
+								<!-- Fall Quarter -->
+								<div class="col-sm">
+									<div>
+										<h4 class="d-inline">Fall Quarter</h4>
+										<h5>{{ @schoolYear->getYear() - 1 }}</h5>
 									</div>
-							</div>
-							</div>
-							<div class="col-sm">
-								<div>
-									<h4 class="d-inline">Winter Quarter</h4>
-									<h5>{{ @year }}</h5>
-								</div>
 
-								<div class="input-group m-2" id="winterQtr">
-									<div class="input-group m-2 mb-0">
-										<!-- declaration for first field -->
-										<textarea class="form-control w-50 inputlg shadow-sm" rows="8"
-												  name="winterQtr" placeholder="Enter classes"
-										><check if="isset(@SESSION.schedule)">{{
-											@SESSION.schedule->getWinterQtr()}}</check></textarea>
+									<div class="input-group m-2">
+										<div class="input-group m-2 mb-0">
+											<!-- declaration for first field -->
+											<textarea
+												class="form-control w-50 inputlg shadow-sm"
+												rows="8"
+											  	name="schoolYears[{{ @schoolYear->getYear() }}][fall][notes]"
+												placeholder="Enter classes"
+											>{{ @schoolYear->getFallNotes() }}</textarea>
+										</div>
+									</div>
+								</div>
+								<!-- Winter Quarter -->
+								<div class="col-sm">
+									<div>
+										<h4 class="d-inline">Winter Quarter</h4>
+										<h5>{{ @schoolYear->getYear() }}</h5>
+									</div>
+
+									<div class="input-group m-2">
+										<div class="input-group m-2 mb-0">
+											<!-- declaration for first field -->
+											<textarea
+												class="form-control w-50 inputlg shadow-sm"
+												rows="8"
+												name="schoolYears[{{ @schoolYear->getYear() }}][winter][notes]"
+												placeholder="Enter classes"
+											>{{ @schoolYear->getWinterNotes() }}</textarea>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="row mt-5">
+								<!-- Spring Quarter -->
+								<div class="col-sm">
+									<div>
+										<h4 class="d-inline">Spring Quarter</h4>
+										<h5>{{ @schoolYear->getYear() }}</h5>
+									</div>
+
+									<div class="input-group m-2">
+										<div class="input-group m-2 mb-0">
+											<!-- declaration for first field -->
+											<textarea
+												class="form-control w-50 inputlg shadow-sm"
+												rows="8"
+												name="schoolYears[{{ @schoolYear->getYear() }}][spring][notes]"
+												placeholder="Enter classes"
+											>{{ @schoolYear->getSpringNotes() }}</textarea>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm">
+									<div>
+										<h4 class="d-inline">Summer Quarter</h4>
+										<h5>{{ @schoolYear->getYear() }}</h5>
+									</div>
+
+									<div class="input-group m-2 mb-4">
+										<div class="input-group m-2 mb-0">
+											<!-- declaration for first field -->
+											<textarea class="form-control w-50 inputlg shadow-sm"
+											  	rows="8"
+											  	name="schoolYears[{{ @schoolYear->getYear() }}][summer][notes]"
+											  	placeholder="Enter classes"
+											>{{ @schoolYear->getSummerNotes() }}</textarea>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
+						</check>
+					</repeat>
 
-						<div class="row mt-5">
-							<div class="col-sm">
-								<div>
-									<h4 class="d-inline">Spring Quarter</h4>
-									<h5>{{ @year }}</h5>
-								</div>
-
-								<div class="input-group m-2" id="springQtr">
-									<div class="input-group m-2 mb-0">
-										<!-- declaration for first field -->
-										<textarea class="form-control w-50 inputlg shadow-sm" rows="8"
-												  name="springQtr" placeholder="Enter classes"
-										><check if="isset(@SESSION.schedule)">{{
-											@SESSION.schedule->getSpringQtr()}}</check></textarea>
-									</div>
-								</div>
-							</div>
-							<div class="col-sm">
-								<div>
-									<h4 class="d-inline">Summer Quarter</h4>
-									<h5>{{ @year }}</h5>
-								</div>
-
-								<div class="input-group m-2 mb-4" id="summerQtr">
-									<div class="input-group m-2 mb-0">
-										<!-- declaration for first field -->
-										<textarea class="form-control w-50 inputlg shadow-sm" rows="8"
-												  name="summerQtr" placeholder="Enter classes"
-										><check if="isset(@SESSION.schedule)">{{ @SESSION.schedule->getSummerQtr()
-											}}</check></textarea>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
 
 					<div class="float-centered mt-5">
 						<button id="addYearForward" class="btn btn-lg bg-secondary text-white shadow-sm"
