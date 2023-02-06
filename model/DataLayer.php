@@ -340,7 +340,7 @@ class DataLayer {
         $newYear = new SchoolYear($currentSchoolYear, "", "", "", "", true);
 
         // Create array of schoolYears
-        $schoolYears = [$currentSchoolYear] = $newYear;
+        $schoolYears[$currentSchoolYear] = $newYear;
 
         return $schoolYears;
     }
