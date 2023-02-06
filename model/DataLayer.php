@@ -326,6 +326,35 @@ class DataLayer {
         return $sql->execute();
     }
 
+    ////   STATIC METHODS   ////
+
+    /**
+     * Method to generate a blank
+     */
+    static function getNewSchoolYears()
+    {
+        // Get data
+        $currentSchoolYear = self::getCurrentSchoolYear();
+
+        // Create Year
+        $newYear = new SchoolYear($currentSchoolYear, "", "", "", "", true);
+
+        // Create array of schoolYears
+        $schoolYears = [$currentSchoolYear] = $newYear;
+
+        return $schoolYears;
+    }
+
+    static function getCurrentSchoolYear(): int
+    {
+        // If date is july or later, return next school year
+        if (idate("m") > 6) {
+            return idate("Y") + 1;
+        }
+        // If date is before july, return current school year
+        return idate ("Y");
+    }
+
 
 	////   UNUSED METHODS   ////
 
@@ -346,32 +375,4 @@ class DataLayer {
 
         return $token;
     }
-
-    /**
-     * Method to generate a blank
-     */
-    static function getNewSchoolYears()
-    {
-        // Get data
-        $currentSchoolYear = self::getCurrentSchoolYear();
-        
-        // Create Year
-        $newYear = new SchoolYear($currentSchoolYear, "", "", "", "", true);
-        
-        // Create array of schoolYears
-        $schoolYears = [$currentSchoolYear] = $newYear;
-
-        return $schoolYears;
-    }
-
-    static function getCurrentSchoolYear(): int
-    {
-        // If date is july or later, return next school year
-        if (idate("m") > 6) {
-            return idate("Y") + 1;
-        }
-        // If date is before july, return current school year
-        return idate ("Y");
-    }
-
 }
