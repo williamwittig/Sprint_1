@@ -6,6 +6,7 @@ class SchoolYear {
     private $_winterNotes;
     private $_springNotes;
     private $_summerNotes;
+    private $_render;
 
     public function __construct($year, $fall = "", $winter = "", $spring = "", $summer = "") {
         $this->_year = $year;
@@ -13,6 +14,7 @@ class SchoolYear {
         $this->_winterNotes = $winter;
         $this->_springNotes = $spring;
         $this->_summerNotes = $summer;
+        $this->_render = false;
     }
 
     // Getters
@@ -31,6 +33,9 @@ class SchoolYear {
     public function getSummerNotes() {
         return $this->_summerNotes;
     }
+    public function shouldRender() {
+        return $this->_render;
+    }
 
     // Setters
     public function setFallNotes($fall) {
@@ -44,6 +49,9 @@ class SchoolYear {
     }
     public function setSummerNotes($summer) {
         $this->_summerNotes = $summer;
+    }
+    public function setRender($render) {
+        $this->_render = $render;
     }
     
 }

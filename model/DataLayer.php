@@ -1,6 +1,7 @@
 <?php
 
 class DataLayer {
+    // FIELDS
 	private $_dbh;
 
 	/**
@@ -16,6 +17,8 @@ class DataLayer {
 		$this->_dbh->setAttribute(PDO::ATTR_EMULATE_PREPARES,FALSE);
 	}
     
+
+    ////   EXISTENCE CHECKING METHODS   ////  
 
 	/**
 	 * Method to check if a token exists in the database.
@@ -53,8 +56,12 @@ class DataLayer {
     }
 
 
+    ////   GETTER METHODS   ////
+
 	/**
-	 * Method to retrieve a Plan given a token.
+	 * Method to retrieve a Plan/Schedule with all quarter data using a token.
+     * Stores data in Schedule object and saves to SESSION['schedule']
+     * @param string $token unique identifier for a plan/schedule
 	 */
 	function getSchedule($token) {
 		// Get Plan
@@ -83,9 +90,9 @@ class DataLayer {
 					$offset = 1;
 				}
 				
-				// Check if School Year already exists
+				// GET OR CREATE School Year
                 $newYear = $schoolYears[$quarter['year'] + $offset] ??
-                            new SchoolYear($quarter['year'] + $offset);
+                        new SchoolYear($quarter['year'] + $offset);
 
 				// Add quarter data to school year
 				switch($quarter['quarter']) {
@@ -103,13 +110,63 @@ class DataLayer {
 				}
 			}
 		}
+        // Render years that appear between years with data
+        $schoolYears = markMiddleYearsForRender($schoolYears);
+
 		// Create and Store Schedule object		
 		$_SESSION['schedule'] = new Schedule(
             $plan['token'], $plan['advisor'], $plan['lastUpdated'], $schoolYears);
 	}
 
+    // Method to mark years with no data for render if they are between
+    // two years with data.
+    private static function markMiddleYearsForRender($schoolYears): array
+    {
+        $first = 3000;
+        $last = 0;
+
+        // Find lowest and highest years with data
+        foreach ($schoolYears as $schoolYear) {
+            if ($schoolYear.shouldRender() == true) {
+                $year = $schoolYear.getYear();
+                
+                if ($year < $first) {
+                    $first = $year;
+                }
+                else if ($year > $last) {
+                    $last = $year;
+                }
+            }
+        }
+
+        // Mark middle years for render
+        for ($i = $first; $i < $last; $i++) {
+            $schoolYear.setRender(true);
+        }
+
+        return $schoolYears;
+    }
+
+    /**
+	 * Method to get all plans. Does not include quarter data.
+	 * @return array of plans containing token, advisor, and lastUpdated
+	 */
+	function getAllSchedules() {
+		$sql = "SELECT * FROM plans";
+        $sql = $this->_dbh->prepare($sql);
+        $sql->execute();
+
+        // Get query results
+        return $sql->fetchAll(PDO::FETCH_ASSOC);
+	}
+
+
+    ////   SAVE NEW PLAN   ////
+
 	/**
 	 * Method to save a new schedule/plan
+     * @param string $token unique identifier for a plan/schedule
+     * @return bool True if the plan was saved, false if an error was detected
 	 */
 	function saveNewPlan($token): bool
     {
@@ -139,62 +196,8 @@ class DataLayer {
         return true;
     }
 
-	function updateSchedule($studentToken, $advisor, $fallQtr, $winterQtr, $springQtr,
-		$summerQtr, $lastSaved) {
-
-		$sql = "UPDATE studentSchedule
-				SET advisor = :advisor, fallQtr = :fallQtr, winterQtr = :winterQtr,
-				springQtr = :springQtr, summerQtr = :summerQtr, lastSaved = :lastSaved
-				WHERE studentToken = :studentToken";
-		$statement = $this->_dbh->prepare($sql);
-		$statement->bindParam(':studentToken', $studentToken);
-		$statement->bindParam(':advisor', $advisor);
-		$statement->bindParam(':fallQtr', $fallQtr);
-		$statement->bindParam(':winterQtr', $winterQtr);
-		$statement->bindParam(':springQtr', $springQtr);
-		$statement->bindParam(':summerQtr', $summerQtr);
-		$statement->bindParam(':lastSaved', $lastSaved);
-		$statement->execute();
-	}
-
-	/**
-	 * Method to get all plans. Does not include quarter data.
-	 * @return array of plans containing token, advisor, and lastUpdated
-	 */
-	function getAllSchedules() {
-		$sql = "SELECT * FROM plans";
-        $sql = $this->_dbh->prepare($sql);
-        $sql->execute();
-
-        // Get query results
-        return $sql->fetchAll(PDO::FETCH_ASSOC);
-	}
-
-
-	// =============================================================================
-	// ==================== OTHER FUNCTIONS NOT INTEGRATED =========================
-	// =============================================================================
-
-
-    /**
-     * Function to randomly generate a new token.
-     * Ensures that the token does not already exist
-     * @return string unique token for a new plan
-     */
-    function generateToken(): string
-    {
-        $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $token = substr(str_shuffle($permitted_chars), 0, 6);
-
-        // Prevent reusing tokens
-        while(!(Validator::validToken($token)) || $this->planExists($token)) {
-            $token = substr(str_shuffle($permitted_chars), 0, 6);
-        }
-
-        return $token;
-    }
-
-    function saveYear($schoolYear, $token): bool
+    // Method to store a single year
+    private function saveYear($schoolYear, $token): bool
     {
         $sql = "INSERT INTO quarters (token, year, quarter, notes)
                 VALUES (:token1, :fallYear, 'fall', :fall),
@@ -229,9 +232,16 @@ class DataLayer {
         return $sql->execute();
     }
 
-    function updatePlan($token)
-    {
-        // Attempt to insert
+
+    ////   UPDATE EXISTING PLAN   ////
+
+    /**
+     * Method to update an existing plan/schedule.
+     * @param string $token unique identifier for a plan/schedule
+     * @return bool True if plan was updated, false if an error was detected
+     */
+	function updateSchedule($token) {
+		// Attempt to update
         $sql = "UPDATE plans SET  
             lastUpdated = :lastUpdated,
             advisor = :advisor
@@ -239,6 +249,7 @@ class DataLayer {
 
         $sql = $this->_dbh->prepare($sql);
 
+        // Load data from POST
         $advisor = $_POST['advisor'];
         $lastUpdated = time();
 
@@ -260,9 +271,10 @@ class DataLayer {
             return true;
         }
         return false;
-    }
+	}
 
-    function updateYear($schoolYear, $token): bool
+    // Method to update a single given year
+    private function updateYear($schoolYear, $token): bool
     {
         // FALL
         $sql = "UPDATE quarters 
@@ -314,6 +326,28 @@ class DataLayer {
         return $sql->execute();
     }
 
+
+	////   UNUSED METHODS   ////
+
+    /**
+     * Function to randomly generate a new token.
+     * Ensures that the token does not already exist
+     * @return string unique token for a new plan
+     */
+    function generateToken(): string
+    {
+        $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $token = substr(str_shuffle($permitted_chars), 0, 6);
+
+        // Prevent reusing tokens
+        while(!(Validator::validToken($token)) || $this->planExists($token)) {
+            $token = substr(str_shuffle($permitted_chars), 0, 6);
+        }
+
+        return $token;
+    }
+
+
     static function createBlankPlan()
     {
         // Get data
@@ -343,28 +377,4 @@ class DataLayer {
         return idate ("Y");
     }
 
-    private static function markMiddleYearsForRender($plan): array
-    {
-        $first = 3000;
-        $last = 0;
-
-        // Find lowest and highest years with data
-        foreach ($plan['schoolYears'] as $year) {
-            if ($year['render'] == true) {
-                if ($year['winter']['calendarYear'] < $first) {
-                    $first = $year['winter']['calendarYear'];
-                }
-                if ($year['winter']['calendarYear'] > $last) {
-                    $last = $year['winter']['calendarYear'];
-                }
-            }
-        }
-
-        // Mark middle years for render
-        for ($i = $first; $i < $last; $i++) {
-            $plan['schoolYears'][$i]['render'] = true;
-        }
-
-        return $plan;
-    }
 }
