@@ -36,7 +36,7 @@ class Schedule {
 
 	/**
 	 * Method to get a Map of the school years associated with this plan.
-	 * @return Map of years to SchoolYear obejects
+	 * @return array of years to SchoolYear objects
 	 */
 	public function getSchoolYears() {
 		return $this->_schoolYears;
@@ -50,7 +50,7 @@ class Schedule {
 	 */
 	public function getSchoolYear($year) {
 		// Return school year if found, or new empty year if not found
-		return $this->_schoolYears.get($year, new SchoolYear($year));
+		return $this->_schoolYears[$year] = new SchoolYear($year);
 	}
 
 
@@ -70,7 +70,7 @@ class Schedule {
 
 	/**
 	 * Method to store all school years at once.
-	 * @param Map $schoolYears School years stored as a map of the year to the SchoolYear object
+	 * @param array $schoolYears School years stored as a map of the year to the SchoolYear object
 	 */
 	public function setSchoolYears($schoolYears) {
 		$this->_schoolYears = $schoolYears;
@@ -81,6 +81,6 @@ class Schedule {
 	 * @param SchoolYear $schoolYear object ecapsulating school year data
 	 */
 	public function setSchoolYear($schoolYear) {
-		$this->_schoolYears.put($schoolYear.getYear(), $schoolYear);
+		$this->_schoolYears[$schoolYear.getYear()] = $schoolYear;
 	}
 }

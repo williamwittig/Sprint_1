@@ -79,72 +79,67 @@ class DataLayer {
         $sql->execute();
 
 		// Parse Quarter data into school years // columns: token, year, quarter, notes
-		$schoolYears = array();
+
         $quarters = $sql->fetchAll(PDO::FETCH_ASSOC);
         if (!empty($quarters)) {
-			
 			foreach ($quarters as $quarter) {
 				// Calendar year offset
 				$offset = 0;
-				if ($quarter['quarter'] == 'fall') {
+				if ($quarter['quarter'] === 'fall') {
 					$offset = 1;
 				}
-				
-				// GET OR CREATE School Year
-                $newYear = $schoolYears[$quarter['year'] + $offset] ??
-                        new SchoolYear($quarter['year'] + $offset);
 
-				// Add quarter data to school year
-				switch($quarter['quarter']) {
-					case 'fall':
-						$newYear.setFallNotes($quarter['notes']);
-						break;
-					case 'winter':
-						$newYear.setWinterNotes($quarter['notes']);
-						break;
-					case 'spring':
-						$newYear.setSpringNotes($quarter['notes']);
-						break;
-					case 'summer':
-						$newYear.setSummerNotes($quarter['notes']);
-				}
+                // Plan[schoolYears][2023][fall][notes] = "Some notes"
+                $plan['schoolYears'][strval($quarter['year']+$offset)][$quarter['quarter']]['notes'] = $quarter['notes'];
+
+                // If data is found, mark year as containing data
+                if (!empty($quarter['notes'])) {
+                    $plan['schoolYears'][strval($quarter['year']+$offset)]['render'] = true;
+                }
 			}
 		}
+
         // Render years that appear between years with data
-        $schoolYears = markMiddleYearsForRender($schoolYears);
+        $plan = self::markMiddleYearsForRender($plan);
+
+        // Store Years in SchoolYear Objects and return as array
+        $schoolYears = self::encapsulateYears($plan['schoolYears']);
 
 		// Create and Store Schedule object		
 		$_SESSION['schedule'] = new Schedule(
             $plan['token'], $plan['advisor'], $plan['lastUpdated'], $schoolYears);
 	}
 
-    // Method to mark years with no data for render if they are between
-    // two years with data.
-    private static function markMiddleYearsForRender($schoolYears): array
+    /**
+     * Method to mark years with no data for render if they are between
+     * two years with data.
+     * @param array $plan array of schedule containing SchoolYear objects
+     * @return array Plan with updated school year objects array with correct
+     * school years marked for render
+     */
+    private static function markMiddleYearsForRender($plan): array
     {
         $first = 3000;
         $last = 0;
 
         // Find lowest and highest years with data
-        foreach ($schoolYears as $schoolYear) {
-            if ($schoolYear.shouldRender() == true) {
-                $year = $schoolYear.getYear();
-                
-                if ($year < $first) {
-                    $first = $year;
+        foreach ($plan['schoolYears'] as $year) {
+            if ($year['render'] === true) {
+                if ($year['winter']['calendarYear'] < $first) {
+                    $first = $year['winter']['calendarYear'];
                 }
-                else if ($year > $last) {
-                    $last = $year;
+                if ($year['winter']['calendarYear'] > $last) {
+                    $last = $year['winter']['calendarYear'];
                 }
             }
         }
 
         // Mark middle years for render
         for ($i = $first; $i < $last; $i++) {
-            $schoolYear.setRender(true);
+            $plan['schoolYears'][$i]['render'] = true;
         }
 
-        return $schoolYears;
+        return $plan;
     }
 
     /**
@@ -326,7 +321,24 @@ class DataLayer {
         return $sql->execute();
     }
 
+
     ////   STATIC METHODS   ////
+
+    private static function encapsulateYears($years) {
+        $schoolYears = array();
+
+        foreach ($years as $year => $schoolYear) {
+            $fall = $schoolYear['fall']['notes'];
+            $winter = $schoolYear['winter']['notes'];
+            $spring = $schoolYear['spring']['notes'];
+            $summer = $schoolYear['summer']['notes'];
+            $render = isset($schoolYear['render']) && $schoolYear['render'] === true;
+
+            // Create and store new year object
+            $schoolYears[$year] = new SchoolYear($year, $fall, $winter, $spring, $summer, $render);
+        }
+        return $schoolYears;
+    }
 
     /**
      * Method to generate a blank
