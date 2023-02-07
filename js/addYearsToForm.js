@@ -43,10 +43,18 @@ function createNewYear(schoolYear) {
     return `
     <div id="${schoolYear}" class="container p-0 mt-4">
         <div class="row">
+        
+            <!-- Year Separator -->
             <div class="col-sm">
-                <h3 class="text-end text-secondary mb-0">${schoolYear}</h3>
+                <h3 class="text-end text-secondary mb-0">{{ @schoolYear->getYear() }}</h3>
+                <input
+                    type="hidden"
+                    value="${schoolYear}"
+                    name="schoolYears[${schoolYear}][schoolYear]"
+                >
             </div>
             <hr class="shadow-sm mt-0">
+								
             <!-- Fall Quarter -->
             <div class="col-sm">
                 <div>

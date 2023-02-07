@@ -170,7 +170,6 @@ class DataLayer {
 
         $sql = $this->_dbh->prepare($sql);
 
-        // TODO: GET DATA WHEN POST FORMAT IS CONFIRMED
         $advisor = $_POST['advisor'];
         $lastUpdated = time();
 
@@ -183,7 +182,6 @@ class DataLayer {
             return false;
         }
 
-        // TODO: UPDATE WHEN POST FORMAT IS CONFIRMED
         foreach($_POST['schoolYears'] as $schoolYear) {
             $this->saveYear($schoolYear, $token);
         }
@@ -205,10 +203,8 @@ class DataLayer {
         $winter = $schoolYear['winter']['notes'];
         $spring = $schoolYear['spring']['notes'];
         $summer = $schoolYear['summer']['notes'];
-        $fallYear = $schoolYear['fall']['calendarYear'];
-        $winterYear = $schoolYear['winter']['calendarYear'];
-        $springYear = $schoolYear['spring']['calendarYear'];
-        $summerYear = $schoolYear['summer']['calendarYear'];
+        $otherYear = $schoolYear['schoolYear'];
+        $fallYear = $otherYear -1;
 
         $sql->bindParam(':token1', $token, PDO::PARAM_STR);
         $sql->bindParam(':token2', $token, PDO::PARAM_STR);
@@ -219,9 +215,9 @@ class DataLayer {
         $sql->bindParam(':spring', $spring, PDO::PARAM_STR);
         $sql->bindParam(':summer', $summer, PDO::PARAM_STR);
         $sql->bindParam(':fallYear', $fallYear, PDO::PARAM_INT);
-        $sql->bindParam(':winterYear', $winterYear, PDO::PARAM_INT);
-        $sql->bindParam(':springYear', $springYear, PDO::PARAM_INT);
-        $sql->bindParam(':summerYear', $summerYear, PDO::PARAM_INT);
+        $sql->bindParam(':winterYear', $otherYear, PDO::PARAM_INT);
+        $sql->bindParam(':springYear', $otherYear, PDO::PARAM_INT);
+        $sql->bindParam(':summerYear', $otherYear, PDO::PARAM_INT);
 
         return $sql->execute();
     }
@@ -253,15 +249,17 @@ class DataLayer {
 
         // Attempt to save plan data
         if ($sql->execute()) {
+
             // Update all years and quarters passed
             foreach ($_POST['schoolYears'] as $schoolYear) {
-                if ($this->yearExists($schoolYear, $token)) {
+                if ($this->yearExists($schoolYear['schoolYear'], $token)) {
                     $this->updateYear($schoolYear, $token);
                 }
                 else {
                     $this->saveYear($schoolYear, $token);
                 }
             }
+
             return true;
         }
         return false;
@@ -270,17 +268,22 @@ class DataLayer {
     // Method to update a single given year
     private function updateYear($schoolYear, $token): bool
     {
+        $failFlag = true;
+
         // FALL
         $sql = "UPDATE quarters 
                 SET `notes` = :fall
                 WHERE `token` = :token AND `year` = :fallYear AND quarter = 'fall'";
         $sql = $this->_dbh->prepare($sql);
         $fall = $schoolYear['fall']['notes'];
-        $fallYear = $schoolYear['fall']['calendarYear'];
+        $fallYear = $schoolYear['schoolYear'] - 1;
         $sql->bindParam(':token', $token, PDO::PARAM_STR);
         $sql->bindParam(':fall', $fall, PDO::PARAM_STR);
         $sql->bindParam(':fallYear', $fallYear, PDO::PARAM_INT);
-        $sql->execute();
+
+        if (!$sql->execute()) {
+            $failFlag = false;
+        }
 
         // WINTER
         $sql = "UPDATE quarters 
@@ -288,11 +291,14 @@ class DataLayer {
                 WHERE `token` = :token AND `year` = :winterYear AND quarter = 'winter'";
         $sql = $this->_dbh->prepare($sql);
         $winter = $schoolYear['winter']['notes'];
-        $winterYear = $schoolYear['winter']['calendarYear'];
+        $winterYear = $schoolYear['schoolYear'];
         $sql->bindParam(':token', $token, PDO::PARAM_STR);
         $sql->bindParam(':winter', $winter, PDO::PARAM_STR);
         $sql->bindParam(':winterYear', $winterYear, PDO::PARAM_INT);
-        $sql->execute();
+
+        if(!$sql->execute()) {
+            $failFlag = false;
+        }
 
         // SPRING
         $sql = "UPDATE quarters 
@@ -300,11 +306,14 @@ class DataLayer {
                 WHERE `token` = :token AND `year` = :springYear AND quarter = 'spring'";
         $sql = $this->_dbh->prepare($sql);
         $spring = $schoolYear['spring']['notes'];
-        $springYear = $schoolYear['spring']['calendarYear'];
+        $springYear = $schoolYear['schoolYear'];
         $sql->bindParam(':token', $token, PDO::PARAM_STR);
         $sql->bindParam(':spring', $spring, PDO::PARAM_STR);
         $sql->bindParam(':springYear', $springYear, PDO::PARAM_INT);
-        $sql->execute();
+
+        if ($sql->execute()) {
+            $failFlag = false;
+        }
 
         // SUMMER
         $sql = "UPDATE quarters 
@@ -312,12 +321,17 @@ class DataLayer {
                 WHERE `token` = :token AND `year` = :summerYear AND quarter = 'summer'";
         $sql = $this->_dbh->prepare($sql);
         $summer = $schoolYear['summer']['notes'];
-        $summerYear = $schoolYear['summer']['calendarYear'];
+        $summerYear = $schoolYear['schoolYear'];
         $sql->bindParam(':token', $token, PDO::PARAM_STR);
         $sql->bindParam(':summer', $summer, PDO::PARAM_STR);
         $sql->bindParam(':summerYear', $summerYear, PDO::PARAM_INT);
 
-        return $sql->execute();
+        if ($sql->execute()) {
+            $failFlag = false;
+        }
+
+        // Save updated data for rendering
+        return $failFlag;
     }
 
 

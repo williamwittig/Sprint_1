@@ -80,7 +80,7 @@ class Schedule {
 	 * Method to store or update a single year.
 	 * @param SchoolYear $schoolYear object ecapsulating school year data
 	 */
-	public function setSchoolYear($schoolYear) {
-		$this->_schoolYears[$schoolYear.getYear()] = $schoolYear;
+	public function setSchoolYear($year, $schoolYear) {
+		$this->_schoolYears[$year] = $schoolYear;
 	}
 }
