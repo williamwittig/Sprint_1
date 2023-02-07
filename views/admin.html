@@ -25,11 +25,8 @@
                 <thead class="bg-grcgreen">
                     <tr>
                         <th scope="col">Token</th>
+                        <th scope="col">URL</th>
                         <th scope="col">Advisor</th>
-                        <th scope="col">Fall Quarter</th>
-                        <th scope="col">Winter Quarter</th>
-                        <th scope="col">Spring Quarter</th>
-                        <th scope="col">Summer Quarter</th>
                         <th scope="col">Last Saved</th>
                     </tr>
                 </thead>
@@ -37,13 +34,14 @@
                     <!--Repeating section to show all data in table from database-->
                     <repeat group="{{ @schedules }}" value="@schedule">
                         <tr>
-                            <td>{{ @schedule['studentToken'] }}</td>
+                            <td>{{ @schedule['token'] }}</td>
+                            <td>
+                                <a href="educationPlan?{{ @schedule['token'] }}" target="_blank">
+                                    Sprint_1/educationPlan?{{ @schedule['token'] }}
+                                </a>
+                            </td>
                             <td>{{ @schedule['advisor'] }}</td>
-                            <td>{{ @schedule['fallQtr'] }}</td>
-                            <td>{{ @schedule['winterQtr'] }}</td>
-                            <td>{{ @schedule['springQtr'] }}</td>
-                            <td>{{ @schedule['summerQtr'] }}</td>
-                            <td>{{ @schedule['lastSaved'] }}</td>
+                            <td>{{ Formatter::formatTime(@schedule['lastUpdated']) }}</td>
                         </tr>
                     </repeat>
                 </tbody>
