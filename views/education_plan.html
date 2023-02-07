@@ -53,7 +53,9 @@
 			<div class="float-centered text-center mt-2 saved">
 					<span class="d-block text-dark">
 						<h5>Last Saved:
-							<check if="isset(@SESSION.schedule)">{{ @SESSION.schedule->getLastSaved() }}</check></h5>
+							<check if="isset(@SESSION.schedule)">{{
+								Formatter::formatTime(@SESSION.schedule->getLastSaved())
+							}}</check></h5>
 					</span>
 			</div>
 		</check>
