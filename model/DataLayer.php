@@ -79,7 +79,7 @@ class DataLayer {
         $sql->execute();
 
 		// Parse Quarter data into school years // columns: token, year, quarter, notes
-
+        $schoolYears = self::getNewSchoolYears();
         $quarters = $sql->fetchAll(PDO::FETCH_ASSOC);
         if (!empty($quarters)) {
 			foreach ($quarters as $quarter) {
@@ -97,13 +97,12 @@ class DataLayer {
                     $plan['schoolYears'][strval($quarter['year']+$offset)]['render'] = true;
                 }
 			}
+            // Render years that appear between years with data
+            $plan = self::markMiddleYearsForRender($plan);
+
+            // Store Years in SchoolYear Objects and return as array
+            $schoolYears = self::encapsulateYears($plan['schoolYears']);
 		}
-
-        // Render years that appear between years with data
-        $plan = self::markMiddleYearsForRender($plan);
-
-        // Store Years in SchoolYear Objects and return as array
-        $schoolYears = self::encapsulateYears($plan['schoolYears']);
 
 		// Create and Store Schedule object		
 		$_SESSION['schedule'] = new Schedule(
