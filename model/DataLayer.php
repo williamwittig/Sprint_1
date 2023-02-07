@@ -123,7 +123,7 @@ class DataLayer {
 
         // Find lowest and highest years with data
         foreach ($plan['schoolYears'] as $year) {
-            if ($year['render'] === true) {
+            if (isset($year['render']) && $year['render'] === true) {
                 if ($year['winter']['calendarYear'] < $first) {
                     $first = $year['winter']['calendarYear'];
                 }

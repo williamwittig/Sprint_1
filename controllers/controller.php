@@ -49,9 +49,6 @@ class Controller {
 			else {
 				$GLOBALS['datalayer']->saveNewPlan($token);
 			}
-
-            // Update schedule for rendering
-            $GLOBALS['datalayer']->getSchedule($token);
             $this->addTokenToURL($token);
 		}
 	}
