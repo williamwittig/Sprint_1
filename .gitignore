@@ -1,0 +1,7 @@
+vendor/
+tmp/
+.gitignore
+base.php
+composer.json
+composer.lock
+installed.json
